@@ -7,6 +7,9 @@ Web-based tool for generating tiled stress-test patterns for large LED displays.
 1. Open `index.html` in a browser.
 2. Use fullscreen mode (press F11 in the browser) for normal operation.
 
+## Run hosted version
+https://arildj78.github.io/LEDscreenStressTest/
+
 ## Controls
 
 - `P`: Toggle control panel.
