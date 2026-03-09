@@ -1,0 +1,227 @@
+# AGENTS.md
+
+This file is the living coordination log for the LED Screen Stress Test project.
+
+## Project
+- Name: LED Screen Stress Test
+- Type: Web-based tool
+- Source Control: Git
+- Remote Hosting: GitHub
+- Deployment Target: GitHub Pages (`github.io`)
+
+## Goals
+- Build a browser-based tool to stress test large LED screens.
+- Keep implementation modular and testable.
+- Maintain a clear deployment path to GitHub Pages.
+
+## Development Workflow
+- Default branch: `main`
+- Commit style: small, focused commits with clear messages
+- Tracking: update this file after each meaningful feature/fix
+
+## Current Status
+- Phase: Initial functional prototype implemented
+- Next step: Refine stress test pattern library and add preset management improvements
+
+## Backlog
+- [x] Define core stress test modes
+- [x] Define UI/UX flow for operators
+- [ ] Expand stress test mode presets
+- [ ] Add advanced custom preset editor UX
+- [ ] Define timing/performance controls
+- [ ] Refine OFF-area identify glow aesthetics (liquid-metal style) to better match desired hydrophobic meniscus/surface-tension behavior
+- [x] Create initial web app scaffold
+- [x] Add local run/build scripts
+- [ ] Configure GitHub Pages deployment
+
+## Decisions
+- 2026-03-07: Initialized project tracking with `AGENTS.md`.
+- 2026-03-07: App architecture uses static files (`index.html`, `styles.css`, `app.js`) to simplify GitHub Pages deployment.
+- 2026-03-07: Core interaction model includes draggable floating control panel with keyboard toggle (`P`).
+- 2026-03-07: Mouse wheel interaction supports mode switching between tile shift and rotation (`W` key and side mouse buttons).
+- 2026-03-07: Initial default preset is half-white/half-black with hard center split.
+- 2026-03-07: Rendering behavior now uses full-viewport stretched tiles in fullscreen and fixed-aspect framed output in windowed mode.
+- 2026-03-07: Tile transform pipeline now uses oversized repeated source content so full X/Y shift and rotation do not expose contrast background in test area.
+- 2026-03-07: Wheel interaction model reverted to naive immediate per-event stepping to reduce control-loop lag and complexity.
+- 2026-03-08: Marked current build as known-good baseline: panel click on/off is enabled for operational use (`off` = black), with all temporary seam-debug render modes removed.
+- 2026-03-08: Marked this build as known-good after shift-direction alignment (`X` right, `Y` down), pixel-slider edge clamp, and reset-button integration.
+- 2026-03-08: Marked current build as known-good after checker preset UX refinements (header-row toolbuttons, short-edge hint), commit-time screen-pixel snapping, and strict both-axes checker divisibility for perfect panel tiling.
+
+## Change Log
+- 2026-03-07: Created initial `AGENTS.md` template for project coordination.
+- 2026-03-07: Implemented first working web prototype with tiled pattern renderer, geometry controls, panel interactions, and preset foundation.
+- 2026-03-07: Updated renderer to preserve configured display aspect ratio in windowed mode with contrast side/top bars.
+- 2026-03-07: Added independent X/Y tile shift controls and wheel-mode cycling across Shift X, Shift Y, and Rotation.
+- 2026-03-07: Reduced render flicker by coalescing redraws, caching transformed tiles, and dropping stale async frames.
+- 2026-03-07: Added configurable mouse-wheel rotation step (degrees per wheel step).
+- 2026-03-07: Added configurable tile dividing lines (visibility, width, and color).
+- 2026-03-07: Added two checkerboard modes: equal checker count per tile and equal checker size in rendered output.
+- 2026-03-07: Corrected checkerboard equal-size rendering to preserve square checks when rotating through 90 degrees.
+- 2026-03-07: Added selectable shift coordinate mode (tile-local vs screen/global axes).
+- 2026-03-07: Replaced shift mode dropdown with compact toggle button (icon + tooltip) to reduce control panel space.
+- 2026-03-07: Refined shift mode toggle to a small square Blender-style icon button with hover hint and accessible labels.
+- 2026-03-07: Moved shift mode toggle into Tile Shift X control (top-right) and restored compact S/T icon style.
+- 2026-03-07: Grouped shift X/Y sliders into a shared row with a common mode toggle in the group header.
+- 2026-03-07: Updated transform composition so rotation is always centered on each visible tile.
+- 2026-03-07: Applied center-locked rotation behavior consistently to screen-shift mode by shifting texture sampling instead of pivot.
+- 2026-03-07: Refined screen-shift mode to apply wraparound shift after centered rotation so pivot lock is visually preserved.
+- 2026-03-07: Corrected screen-shift implementation to avoid inter-tile seam artifacts while keeping per-tile center-locked rotation.
+- 2026-03-07: Added screen-mode rotation compensation that updates shift X/Y as angle changes to preserve center-locked behavior.
+- 2026-03-07: Replaced screen-mode slider compensation with phase-shifted sampling so rotation remains center-locked without circular drift.
+- 2026-03-07: Switched screen-mode shift handling to internal local-phase state with projected screen sliders to keep panel-centered rotation stable.
+- 2026-03-07: Fixed screen-mode axis coupling by converting screen/local shifts in tile-pixel space (not raw percentage space).
+- 2026-03-07: Updated wheel mode badge to reflect current shift coordinate system and added `C` shortcut to toggle Tile/Screen shift mode.
+- 2026-03-07: Changed wheel-mode cycle shortcut from `W` to `Tab`.
+- 2026-03-07: Added `Shift+Tab` support to cycle wheel mode in reverse.
+- 2026-03-07: Added timed wheel-mode hint visibility (show on mode change, then fade out).
+- 2026-03-07: Removed top-right overlay panel toggle button; panel is toggled via keyboard and in-panel controls.
+- 2026-03-07: Enabled wraparound behavior for shift X/Y sliders and wheel-driven shift adjustments.
+- 2026-03-07: Fixed shift wrap consistency by using inclusive wheel wrap for X/Y and snapping projected slider values to step.
+- 2026-03-07: Stabilized wheel response by quantizing raw wheel deltas with an accumulator for consistent shift/rotation rate.
+- 2026-03-07: Reduced wheel jitter by switching to finer normalized step accumulation with direction-flip remainder reset.
+- 2026-03-07: Capped wheel application to one logical step per event to prevent sudden perceived 2x speed jumps.
+- 2026-03-07: Added wheel telemetry capture/export tooling and adaptive high-speed wheel gain for faster response at max spin.
+- 2026-03-07: Replaced per-event wheel stepping with bounded queued emission for smooth spin deceleration while keeping single-step wheel responsiveness.
+- 2026-03-07: Tuned wheel queue lag by clamping per-event impulse, reducing queue depth, and boosting drain after input pause.
+- 2026-03-07: Increased wheel max speed and shortened stop tail via higher emission rates and earlier/stronger idle drain boost.
+- 2026-03-07: Removed adaptive queued wheel controller and restored direct one-step-per-wheel-event behavior.
+- 2026-03-07: Updated wheel telemetry to capture raw wheel event fields for every event and switched telemetry timestamps to relative nanoseconds.
+- 2026-03-07: Added per-event telemetry sequence indexing (`eventIndex`) and inter-event nanosecond delta (`dtNs`) for easier graph analysis.
+- 2026-03-07: Calibrated naive wheel stepping so 100 units of scaled wheel `deltaY` produce one logical step (multi-step output for large packets).
+- 2026-03-07: Added optional WebHID mouse input mode with connect/disconnect controls, telemetry source tagging, and automatic fallback to DOM wheel input.
+- 2026-03-07: Improved WebHID receiver compatibility by listening to all selected mouse interfaces and adding live HID report/wheel-byte status diagnostics.
+- 2026-03-07: Added HID wheel-signal gating so app falls back to DOM wheel until non-zero HID wheel input is detected, and broadened HID device selection to include non-mouse-class receiver interfaces.
+- 2026-03-07: Added explicit HID connection/open error diagnostics in status panel and per-device open handling to surface why reports may remain zero.
+- 2026-03-07: Added live HID report heartbeat diagnostics (last report id/length/device/age) to distinguish no-HID-input from no-wheel-signal cases.
+- 2026-03-07: Added HID wheel mapping controls (`wheel byte index`, `report id`) plus auto byte-activity detection to handle receivers where wheel is not on the standard report byte.
+- 2026-03-07: Added one-click `Learn HID Wheel` mode that samples report activity for 3s and auto-fills `report id` + `wheel byte index` overrides.
+- 2026-03-07: Relaxed HID learn/auto mapping filters and switched auto-detection to `reportId:byteIndex` pairing for nonstandard report layouts.
+- 2026-03-07: Switched HID wheel extraction to byte-delta parsing (per report) and added `HID byte activity` diagnostics to surface active `reportId:byteIndex` candidates.
+- 2026-03-07: Disabled HID control path for this build and locked input source to DOM wheel to reduce operator confusion on unsupported receiver wheel telemetry.
+- 2026-03-07: Removed stale HID event/config references left after wheel-only cleanup to restore runtime stability.
+- 2026-03-07: Removed wheel telemetry instrumentation UI/code paths to keep the build focused on direct DOM wheel control.
+- 2026-03-07: Added shift step-mode toggle (`%` vs `1px`) so wheel shift X/Y can move by one rendered panel pixel per step.
+- 2026-03-07: Updated `1px` shift-step conversion to use configured panel pixel inputs (`Screen Pixels Width/Height`) from the control panel, with viewport fallback when unset.
+- 2026-03-07: Matched tile source canvas size to configured/output tile pixel size and disabled image smoothing in tile draw/transform pipeline to reduce checker blur when scaling (e.g. 1x1 panel mode).
+- 2026-03-07: Removed minimum 16px tile-source clamp so very low configured resolutions (e.g. 1x1 tile at 4x4 pixels) render at the exact configured pixel density.
+- 2026-03-07: Added selectable render filter mode (`Nearest Neighbor` vs `Anti-Aliased`) applied to both tile transform/rotation and final tiled draw.
+- 2026-03-07: Updated render filter semantics so anti-aliasing applies to tile transform/rotation stage only, while final upscaling to viewport always uses nearest-neighbor.
+- 2026-03-07: Pixel-step wheel shifting now advances in whole integer panel pixels (no subpixel increments), independent of anti-aliasing setting.
+- 2026-03-07: Shift sliders are now mode-aware: `%` mode uses 0.1% floating-point slider steps/labels, while `1px` mode uses integer pixel steps/labels.
+- 2026-03-07: Moved render filter control from dropdown to compact square header toggle button (`N`/`A`) beside shift step and shift coordinate toggles.
+- 2026-03-07: Shift X/Y range now spans exactly one tile (`-50%` to `50%`), and wheel/pixel wrapping logic was aligned to one-tile periodicity.
+- 2026-03-07: Added checker-size slider (`px/checker`) with integer range `1..short-edge-pixels` and hooked checker presets to render using the selected checker pixel size.
+- 2026-03-07: Fixed checker-size update/flicker by keying tile cache with checker pixel size and clearing cache on checker-size slider changes.
+- 2026-03-07: Refined checker generation to draw fixed pixel-size squares directly, eliminating uneven quantization and keeping X/Y checker-size changes synchronized per slider step.
+- 2026-03-07: Increased transform overscan canvas size for tile rotation/shift sampling to reduce edge seam artifacts at high angles (e.g. 45 degrees).
+- 2026-03-07: Fixed residual max-shift rotation seams by replacing single-blit phase shifting with wrapped tiled composition so transformed sampling stays fully covered at extreme offsets.
+- 2026-03-07: Replaced overscan/blit-based tile transform sampling with direct toroidal per-pixel wrapped resampling (nearest or bilinear) to make rotated+shifted tile edges periodic and eliminate remaining seam artifacts at max shift.
+- 2026-03-07: Made checker synthesis tile-periodic for arbitrary checker-size slider values by enforcing even checker counts per axis and rasterizing via per-pixel cell mapping, preventing phase jumps at tile boundaries.
+- 2026-03-07: Reverted checker periodicity remap to preserve strict requested `px/checker` sizing and switched transform path back to larger wrapped overscan canvases with dynamic pixel-budget capping so extreme shift cannot sample beyond available rotated source coverage.
+- 2026-03-07: Added click-to-toggle panel power overrides in the output viewport so individual tiles can be forced black (`off`) for visual seam debugging.
+- 2026-03-07: Updated panel power-debug mode so forced `off` tiles render the full underlying source tile (pre-shift/pre-rotation) instead of black to aid transform-boundary diagnosis.
+- 2026-03-07: Updated panel power-debug mode so forced `off` tiles generate no content directly, while adjacent `on` tiles emit transformed output into off-tile areas for seam-origin diagnosis.
+- 2026-03-07: Reverted panel power-debug mode back to source-tile visualization for `off` tiles after bleed-based debug mode proved less useful.
+- 2026-03-07: Rolled back panel power-debug feature entirely (tile click overrides removed) and restored uniform tiled rendering path.
+- 2026-03-08: Reintroduced click-to-toggle panel power overrides for operational use; forced `off` tiles render black while `on` tiles keep normal transformed output.
+- 2026-03-08: Established this point as a known-good state for future debugging and rollback.
+- 2026-03-08: Added right-click single-tile inspect mode that overlays one selected tile with full underlying source content (pre-shift/pre-rotation) to diagnose edge locations while keeping panel power on/off controls.
+- 2026-03-08: Enhanced right-click inspect mode so selected source-tile view also bleeds into adjacent forced-off tiles, and hardened context-menu suppression for reliable right-click interaction.
+- 2026-03-08: Updated right-click inspect rendering to follow active shift/rotation while using non-wrapping sampling, so inspect view reveals clipped edges instead of periodic wrap.
+- 2026-03-08: Corrected inspect bleed rendering to sample one continuous non-wrapping inspect field across the 3x3 neighborhood, preventing repeated identical tile copies in adjacent off tiles.
+- 2026-03-08: Expanded inspect bleed sampling neighborhood to a larger continuous non-wrapping field so right-click inspect remains visible across multiple nearby forced-off tiles.
+- 2026-03-08: Increased checker source generation size to 2x panel width/height while keeping panel-sized transform output, providing more shift/rotation headroom before underlying pattern edges are reached.
+- 2026-03-08: Increased non-wrapping inspect source draw scale to 2x so right-click inspect content spans at least two panel widths/heights instead of a single panel footprint.
+- 2026-03-08: Increased non-wrapping inspect source draw scale to 3x so right-click inspect content spans roughly three panel widths/heights for wider edge inspection.
+- 2026-03-08: Updated checker source generation to a diagonal-sized square (`ceil(sqrt(w^2 + h^2))`) while preserving panel-sized transform output, increasing rotational headroom with symmetric coverage.
+- 2026-03-08: Increased checker underlying square side from one panel diagonal to two diagonals for larger shift/rotation headroom in normal rendering.
+- 2026-03-08: Anchored checker phase origin to the panel crop top-left within enlarged checker sources so top/left edge spill is eliminated at neutral placement.
+- 2026-03-08: Replaced panel-origin checker anchoring with transform-crop phase anchoring so neutral (no shift/rotation) view starts on full checker boundaries while keeping enlarged source fully checker-filled.
+- 2026-03-08: Corrected checker phase anchoring to use panel sample origin mapped into source-tile period before checker-size modulo, fixing top-left boundary consistency for non-power-of-two checker sizes.
+- 2026-03-08: Refined checker generation to apply phase at boundary-position level (not only color parity) via per-pixel cell mapping, so checker-size changes remain anchored to the panel sample origin.
+- 2026-03-08: Aligned transform sampling surfaces so crop origins are integer pixels, then anchored checker phase against that exact crop origin to reduce size-dependent phase drift.
+- 2026-03-08: Switched non-wrapping inspect field sizing from fixed multi-panel scale to panel-diagonal square sizing (`ceil(sqrt(w^2 + h^2))`) so right-click inspect content is square and panel-aspect scaling is removed.
+- 2026-03-08: Changed forced `off` panel fill color from black to dark gray to distinguish off-state fill from truly black rendered texture during inspect debugging.
+- 2026-03-08: Fixed inspect-mode aspect distortion by keeping inspect field tile cells panel-aspect while retaining diagonal-square underlying texture sizing.
+- 2026-03-08: Increased inspect underlying square size from one panel diagonal to two diagonals for larger non-wrapping edge-inspection headroom.
+- 2026-03-08: Removed auto-wrap on direct X/Y slider drag so handles stay at chosen edge positions, while preserving wraparound behavior for wheel-driven shift adjustments.
+- 2026-03-08: Unified inspect and normal transform paths by extending `transformTile` with wrap/non-wrap options and routing inspect field generation through the same core pipeline (non-wrap mode), improving behavior parity for debugging.
+- 2026-03-08: Added inspect-mode red origin marker (small circle) projected from inspect field center into sampled tiles to visualize the active drawing/scaling origin during debugging.
+- 2026-03-08: Added thin red crosshair through the inspect origin marker to improve origin tracking at high checker density.
+- 2026-03-08: Updated inspect origin marker/crosshair to use transformed checker-basis origin metadata (not field center), aligning debug marker with checker anchor behavior during checker-size changes.
+- 2026-03-08: Updated inspect debug overlays so crosshair marks transform/scaling center while the red dot marks transformed checker-basis origin, enabling direct comparison of the two origins.
+- 2026-03-08: Rejoined inspect overlays so crosshair and dot mark the same transformed checker origin, and centered checker generation origin on transform center to keep draw/scale origins aligned.
+- 2026-03-08: Replaced inspect field slicing with per-offset non-wrap `transformTile` renders at normal tile output dimensions, removing remaining inspect-vs-production origin/scale mismatch from debug composition.
+- 2026-03-08: Switched inspect composition to a single non-wrap overlay render anchored at the inspected panel and drawn without per-panel recentering, so underlying content spills across neighboring tiles as one continuous field.
+- 2026-03-08: Added a left-separated reset toolbutton in the shift/geometry control row that sets Shift X, Shift Y, and Rotation to zero.
+- 2026-03-08: Fixed pixel-step slider drag behavior to clamp at range edges (no drag-wrap), while preserving wrap behavior for wheel-driven pixel stepping.
+- 2026-03-08: Reversed render-side X/Y shift sign mapping so increasing shift sliders moves content in the same direction on-screen (X right, Y down).
+- 2026-03-08: Added checker-size preset toolbuttons beside the checker slider using dynamic short-edge checker-count targets (`2,4,6...`) with exact-count size mapping when available.
+- 2026-03-08: Established this post-shift-fix state as a known working version for future rollback/debug reference.
+- 2026-03-08: Center-aligned wrap-mode source tiling phase in `transformTile` (instead of 0,0-anchored pattern fill) so normal and inspect pipelines share the same base scaling origin.
+- 2026-03-08: Restricted checker-size preset toolbuttons to only generate counts whose checker size divides both tile width and tile height, ensuring perfect checker continuity at neighboring panel boundaries.
+- 2026-03-08: Restyled checker-size preset toolbuttons to match existing square mode toolbuttons, moved them onto the `Checker Size` header row, and updated hover hint text to `Number of checkers on short edge`.
+- 2026-03-08: Screen pixel width/height inputs now auto-snap to nearest valid multiples of tile counts (`totalTilesX`/`totalTilesY`) so each panel receives an integer pixel count; invalid values are replaced immediately.
+- 2026-03-08: Relaxed screen-pixel snapping during typing: width/height now snap on commit (`Enter`, blur, or change) while input is free-form during edit, and numeric spinbuttons step by axis-valid multiples (`totalTilesX`/`totalTilesY`).
+- 2026-03-08: Adjusted checker-size preset suggestion math to be short-edge-driven only, so long-edge pixel changes do not suppress all preset buttons.
+- 2026-03-08: Restored checker-size preset generation to require checker sizes that divide both tile width and tile height, preserving strict perfect-grid continuity across neighboring panels.
+- 2026-03-08: Corrected checker preset rendering split: `Checkerboard (Equal Count)` now renders count-based cells (same checker count on X/Y), while `Checkerboard (Equal Size)` remains pixel-size-based square cells.
+- 2026-03-08: Enhanced checker size readout in `Checkerboard (Equal Count)` to show both pixel size and derived short-edge checker count (`N px (~C checks)`) for clearer tuning feedback.
+- 2026-03-08: Reverted checker size readout enhancement and restored a plain `N px` label for both checker modes.
+- 2026-03-08: Set default shift step mode to `1px` (pixel mode) instead of `%` on startup.
+- 2026-03-08: `Half White / Half Black` now uses the size slider as `Band Width (px)` and renders alternating white/black vertical bands at that width, using the same enlarged underlying source sizing as checker presets.
+- 2026-03-08: Updated `Half White / Half Black` band-width slider max to panel-diagonal pixels (`ceil(sqrt(w^2 + h^2))`) so maximum band size matches panel diagonal span.
+- 2026-03-08: Reworked `Half White / Half Black` rendering to a black field with a left-edge white vertical stripe per panel period (`Band Width` px), anchored so neutral view aligns stripe start to panel left while retaining checker-style enlarged source sizing.
+- 2026-03-08: Updated `Half White / Half Black` to render a single non-repeating left-edge white stripe (no periodic repetition), still anchored to panel left at neutral view and using checker-style enlarged source sizing.
+- 2026-03-08: Updated `Half White / Half Black` to use panel-periodic left-edge white stripe sampling (black elsewhere) so stripe motion wraps seamlessly from right to left across neighboring panels while staying panel-left anchored at neutral view.
+- 2026-03-08: Added angle-dependent integer split-band period (`ceil(|w*cos(theta)| + |h*sin(theta)|)`) so stripe spacing adjusts with rotation while preserving exact integer-pixel line width and on-pixel placement.
+- 2026-03-08: Added integer angle-based phase compensation for split-band rendering (plus cache-key coverage) to correct 90-degree edge anchoring drift and avoid shift positions where a 1px line can disappear due center-rounding phase mismatch.
+- 2026-03-08: Aligned split-band shift basis and pixel-step/wrap counts to the angle-dependent stripe period so rotated panels (e.g. 10x12 at 90 degrees) traverse in the expected integer step count without wrap jumps.
+- 2026-03-08: Removed `Half White / Half Black` preset and all related Band Width/split-pattern rendering, caching, and shift-basis logic to return to checker/custom-focused behavior.
+- 2026-03-08: Added new `Vertical Line` preset with shared size slider renamed to `Band Width (px)` in that mode; pattern renders a panel-periodic left-edge line on black so screen-coordinate shifting wraps smoothly across neighboring panels, including vertical movement after rotation.
+- 2026-03-08: Aligned `Vertical Line` rendering period, source caching, transform shift basis, and pixel-step counts to angle-dependent integer projected width so 90-degree rotation keeps the line visible/on-pixel and avoids wrap-step mismatches.
+- 2026-03-09: Fixed rotated-wheel dead-zone behavior by aligning screen/local shift conversion basis with angle-aware per-axis pixel step basis, preventing small wheel steps from stalling until large delta jumps.
+- 2026-03-09: Removed browser range-step quantization in pixel shift mode (`step=any`) and kept snapping in JS whole-pixel math to prevent repeated slider values and wheel-stuck behavior at rotated angle-dependent periods.
+- 2026-03-09: Pixel shift sliders now use axis-aware min/max bounds derived from per-axis panel pixel counts, so X/Y ranges differ correctly (e.g. 10px vs 12px) instead of sharing a fixed `-50..50` percent window.
+- 2026-03-09: Pixel-snapped tile compositing now uses integer boundary partitions across the render frame, removing fractional-edge coverage artifacts that could appear as 1px right/bottom lines across presets.
+- 2026-03-09: Reverted pixel-boundary compositing partitioning after it introduced visible panel/grid alignment offsets; restored previous compositing path pending a narrower fix for right/bottom edge artifacts.
+- 2026-03-09: Adjusted checker/line underlying anchor placement from floor-biased to rounded center offsets to correct a 1px top/left phase bias in underlying pattern positioning.
+- 2026-03-09: Preset row now uses a narrower dropdown with right-side `Color 1`, `Color 2`, and swap toolbuttons; color controls apply to checker and vertical-line presets and update pattern rendering live.
+- 2026-03-09: Phase-centered `Vertical Line` pattern period around panel centers so rotation behavior is anchored more closely to each panel center while preserving wrap behavior.
+- 2026-03-09: Wheel and `Tab` shortcut handling now gates on pointer-over-panel state: while cursor is over the control panel, native UI focus/scroll behavior is preserved; outside the panel, wheel/`Tab` control the graphic regardless of lingering form focus.
+- 2026-03-09: Direct interaction with `X`, `Y`, or `Rotation` controls now sets the active wheel mode to that control immediately, so wheel input follows the most recently touched tab-cycled control.
+- 2026-03-09: Expanded wheel-mode activation hit areas to entire `X`/`Y`/`Rotation` control groups (label, slider, and output regions), so clicks within a control box consistently select that mode.
+- 2026-03-09: Added `Checker Size / Band Width` as a wheel-mode target (`Tab` cycle + direct control activation), including wheel-badge labeling and active highlighting on the size slider control.
+- 2026-03-09: Added per-control wheel-cycle inclusion checkmarks (`X`, `Y`, `Rotation`, `Size`) so `Tab` cycling follows selected controls only, with guard logic preventing all modes from being disabled.
+- 2026-03-09: Moved wheel-cycle inclusion checkmarks directly into each control caption (`X`, `Y`, `Tile Rotation`, and `Checker Size / Band Width`) instead of a separate selector row.
+- 2026-03-09: Added `Curtain` preset with panel-periodic left/right color split controlled by `Band Width (px)` as divider position (`0..panel-width`), and rotation pivot aligned to divider center (`x=divider`, `y=panel/2`) so rotation occurs around the viewed dividing line center.
+- 2026-03-09: Curtain repeat period and shift basis now follow angle-dependent projected width, ensuring the dividing line fully exits one side before the next instance re-enters from the opposite side at any rotation.
+- 2026-03-09: Simplified `Curtain` preset to a non-repeating two-color split with fixed center divider and center pivot; removed `Band Width / Checker Size` control participation for this preset.
+- 2026-03-09: Kept `Band Width / Checker Size` control visible in `Curtain` mode but explicitly disabled (dimmed UI, disabled range input, and `Band Width (disabled)` labeling) to make unavailability clear.
+- 2026-03-09: Disabled `Tile Shift Y` in `Curtain` mode (dimmed + non-interactive + wheel-cycle exclusion), and forced Curtain rendering to ignore Y-shift input.
+- 2026-03-09: Refined Curtain Y-lock behavior so `Tile Shift Y` is disabled only in `Tile` coordinates; switching to `Screen` coordinates re-enables Y control, wheel-cycle inclusion, and Y-shift rendering effect.
+- 2026-03-09: Added optional accent-color sub-grid overlay controls under `Dividing Lines` (`Show Pixel Sub-grid`, `Sub-grid X/Y`) with defaults `16x16 px`; sub-grid draws beneath panel dividing lines and derives color as an accent from the panel line color.
+- 2026-03-09: Added sub-grid preset toolbuttons (`2,4,8,16,32,64`) to set `Sub-grid X/Y` together using powers-of-two values, with active-state highlighting for matching `X=Y` selections.
+- 2026-03-09: Removed numeric `Sub-grid X/Y` inputs and made sub-grid size button-only via power-of-two preset toolbuttons; clicking a preset now also auto-enables `Show Pixel Sub-grid` so the change is immediately visible.
+- 2026-03-09: Stabilized sub-grid preset button behavior by using persistent power-of-two buttons (`2,4,8,16,32,64`) with direct click handlers and state refresh (active/disabled) instead of rebuilding button DOM each update.
+- 2026-03-09: Set startup default preset to `Checkerboard (Equal Size)` and initialize checker size to approximately two checks on the short edge (`size ~= short-edge/2`).
+- 2026-03-09: Corrected default equal-size checker initialization to use `floor(short-edge/2)` so odd short-edge sizes do not collapse to a single checker.
+- 2026-03-09: Fixed startup checker default assignment order by setting checker slider min/max before writing default value, preventing browser clamping to `1` when short-edge target is larger (e.g. `32 px`).
+- 2026-03-09: Set `Checker Size / Band Width` wheel-cycle checkbox default to unchecked so size is excluded from `Tab`/wheel mode rotation on startup.
+- 2026-03-09: Added `Local Image (Fullscreen)` preset with local file picker controls; selected image source is persisted in browser storage and auto-restored on next load, with fallback to `tekniskfeil.png`.
+- 2026-03-09: Enabled panel on/off overrides in `Local Image (Fullscreen)` mode by applying off-tile overlays on top of the fullscreen image and using fullscreen interaction frame hit-testing.
+- 2026-03-09: `Local Image (Fullscreen)` now supports pan (`X/Y`) and rotation controls with non-wrapping rendering; moving/rotating can reveal black background where image no longer covers.
+- 2026-03-09: Refined `Local Image (Fullscreen)` shift mapping so `Tile` coordinates move in image-local axes while `Screen` coordinates move in screen axes, aligning image-coordinate movement with tile-coordinate semantics.
+- 2026-03-09: Disabled right-click inspect toggling; inspect is now keyboard-only via `I` on the tile under the cursor, and inspect interaction was removed from in-app help text.
+- 2026-03-09: When `Show Pixel Sub-grid` is enabled, left-click now toggles sub-grid cells (pixel blocks) instead of whole-panel power; disabled sub-grid cells render as dark overlays beneath grid/dividing lines.
+- 2026-03-09: Fixed sub-grid click visibility by rendering disabled sub-grid cell overlays in both standard and fullscreen-image draw paths.
+- 2026-03-09: Disabled sub-grid cell overlays now render even when sub-grid/dividing-line visibility is turned off, and remain persistent through panel on/off toggles.
+- 2026-03-09: Added bulk toggle buttons in `Dividing Lines` for `All Panels On/Off` and `All Sub-grid On/Off`, wired to current geometry and active sub-grid configuration.
+- 2026-03-09: Updated OFF-state rendering color to solid black (`#000000`) so OFF is visually identical to black texture regions by design.
+- 2026-03-09: Aligned disabled sub-grid cell overlays with OFF policy by using solid black fill (`#000000`) instead of semi-transparent dark gray.
+- 2026-03-09: Added separate identify toggles for OFF panels and OFF sub-grid cells with animated fade-in/out glow overlays; panel glow is per-panel while sub-grid glow uses a shared contiguous puddle-style field for touching disabled cells.
+- 2026-03-09: Refined identify glow style toward a high-end UI liquid-metal look: more uniform molten surface, boundary meniscus against hydrophobic neighbors, and corner tension arcs for disabled sub-grid cells while keeping panel puddles visually separated.
+- 2026-03-09: Added right-click selection outlines for panels/sub-grid cells (mode-aware) with thick boundary-aligned strokes using divider/sub-grid colors, plus a `Selection Report` button that outputs Excel-style row/column identifiers for selected modules, panels, and sub-grid cells.
+- 2026-03-09: Refined `Selection Report` to list panels and sub-grid only (modules removed), with sub-grid coordinates reset from top-left within each panel.
+- 2026-03-09: Upgraded `Selection Report` from alert-only output to a modal with `Copy Text` and `Close` actions, including clipboard-copy support and fallback selection-copy path.
+- 2026-03-09: Fixed selection report modal startup visibility by adding explicit `.report-modal[hidden] { display: none; }` so it no longer appears on page load.
