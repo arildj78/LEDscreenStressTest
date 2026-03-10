@@ -244,3 +244,4 @@ This file is the living coordination log for the LED Screen Stress Test project.
 - 2026-03-10: Marked this point as a known working version before commit handoff.
 - 2026-03-10: Fixed hosted fullscreen image/link reliability by correcting default image filename encoding (`ut\u00f8ver`), resolving relative image sources against the current page URL, and constructing shared links from explicit `origin + pathname`.
 - 2026-03-10: Fixed hosted built-in fullscreen source switching by changing dropdown values to stable tokens (`default`/`fallback`) and adding filename-based source normalization for legacy/absolute paths.
+- 2026-03-10: Renamed preset label from `Local Image (Fullscreen)` to `Full Screen Image`.
