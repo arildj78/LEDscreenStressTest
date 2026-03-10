@@ -245,3 +245,5 @@ This file is the living coordination log for the LED Screen Stress Test project.
 - 2026-03-10: Fixed hosted fullscreen image/link reliability by correcting default image filename encoding (`ut\u00f8ver`), resolving relative image sources against the current page URL, and constructing shared links from explicit `origin + pathname`.
 - 2026-03-10: Fixed hosted built-in fullscreen source switching by changing dropdown values to stable tokens (`default`/`fallback`) and adding filename-based source normalization for legacy/absolute paths.
 - 2026-03-10: Renamed preset label from `Local Image (Fullscreen)` to `Full Screen Image`.
+- 2026-03-10: Prevented first-render URL replacement when opening shared links by seeding URL-sync baseline from computed sparse params, so manually entered links stay unchanged until a real user state change.
+- 2026-03-10: Shared-link restore now resets share-controlled state to defaults before applying URL params, preventing stale browser-restored values from leaking into rewritten URLs.
