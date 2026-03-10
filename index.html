@@ -66,10 +66,21 @@
           <label>Fullscreen Image Source</label>
           <div class="inline-controls">
             <button id="chooseImageSourceButton" type="button">Choose Image</button>
-            <button id="useFallbackImageButton" type="button">Use Fallback</button>
+            <select id="builtinImageSelect" aria-label="Built-in fullscreen image source">
+              <option value="Beste utøver - GIFAS.png">Beste utøver</option>
+              <option value="tekniskfeil.png">Teknisk feil</option>
+            </select>
           </div>
+          <label>Image Scaling
+            <select id="fullscreenImageScaleSelect" aria-label="Fullscreen image scaling mode">
+              <option value="none">No scaling (100%)</option>
+              <option value="cover" selected>Cover</option>
+              <option value="contain">Contain</option>
+              <option value="stretch">Stretch</option>
+            </select>
+          </label>
+          <label class="cycle-caption"><input id="fullscreenImageWrapInput" type="checkbox"> Fullscreen image wrap around</label>
           <input id="imageSourceInput" type="file" accept="image/*" hidden>
-          <output id="imageSourceOutput">Fallback: tekniskfeil.png</output>
         </div>
 
         <div class="control-group shift-controls-group">

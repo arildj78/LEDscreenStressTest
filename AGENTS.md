@@ -225,3 +225,12 @@ This file is the living coordination log for the LED Screen Stress Test project.
 - 2026-03-09: Refined `Selection Report` to list panels and sub-grid only (modules removed), with sub-grid coordinates reset from top-left within each panel.
 - 2026-03-09: Upgraded `Selection Report` from alert-only output to a modal with `Copy Text` and `Close` actions, including clipboard-copy support and fallback selection-copy path.
 - 2026-03-09: Fixed selection report modal startup visibility by adding explicit `.report-modal[hidden] { display: none; }` so it no longer appears on page load.
+- 2026-03-10: Fullscreen image mode now defaults immediately to `Beste utøver - GIFAS.png` (with `tekniskfeil.png` fallback path retained), and added a `Fullscreen image wrap around` checkbox to toggle wrapped vs non-wrapped image movement.
+- 2026-03-10: Fullscreen image source now prefers last-used persisted source; if none or missing it falls back to `tekniskfeil.png`, and image controls now use a built-in source dropdown (`Beste utøver`, `Teknisk feil`) instead of a separate fallback button.
+- 2026-03-10: Added fullscreen image scaling dropdown with common modes (`Cover`, `Contain`, `Stretch`) applied in transformed image rendering.
+- 2026-03-10: Added `No scaling (100%)` option to fullscreen image scaling modes, rendering the source at native image size.
+- 2026-03-10: Fullscreen image scaling now refreshes on browser fullscreen transitions (`fullscreenchange` and vendor variants) so active scaling mode is reapplied when entering/exiting fullscreen.
+- 2026-03-10: Fullscreen image source dropdown now includes a dynamic local-file slot (`Local: ...`) when a custom image is active, replacing the separate selected-file status label below controls.
+- 2026-03-10: Set fullscreen image scaling dropdown default mode to `Cover`.
+- 2026-03-10: Fullscreen image source handling now retains the local-file dropdown slot (`Local: ...`) even after switching to built-in sources, and removes that slot only when the retained local source is unavailable.
+- 2026-03-10: Fixed fullscreen image shift basis so `1px` shift steps and pan conversion use the rendered image footprint (`drawW/drawH`) rather than per-panel tile dimensions, including tile-to-screen conversion in fullscreen image mode.

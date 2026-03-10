@@ -25,9 +25,10 @@ const customPresetName = document.getElementById("customPresetName");
 const saveCustomPresetButton = document.getElementById("saveCustomPresetButton");
 const imageSourceSection = document.getElementById("imageSourceSection");
 const chooseImageSourceButton = document.getElementById("chooseImageSourceButton");
-const useFallbackImageButton = document.getElementById("useFallbackImageButton");
+const builtinImageSelect = document.getElementById("builtinImageSelect");
 const imageSourceInput = document.getElementById("imageSourceInput");
-const imageSourceOutput = document.getElementById("imageSourceOutput");
+const fullscreenImageScaleSelect = document.getElementById("fullscreenImageScaleSelect");
+const fullscreenImageWrapInput = document.getElementById("fullscreenImageWrapInput");
 
 const tileShiftXRange = document.getElementById("tileShiftXRange");
 const tileShiftXOutput = document.getElementById("tileShiftXOutput");
@@ -78,7 +79,13 @@ const infoBox = document.getElementById("infoBox");
 const STORAGE_KEY = "led-stress-custom-presets";
 const IMAGE_SOURCE_DATA_STORAGE_KEY = "led-stress-image-source-data-url";
 const IMAGE_SOURCE_NAME_STORAGE_KEY = "led-stress-image-source-name";
+const IMAGE_LOCAL_DATA_STORAGE_KEY = "led-stress-image-local-data-url";
+const IMAGE_LOCAL_NAME_STORAGE_KEY = "led-stress-image-local-name";
+const DEFAULT_FULLSCREEN_IMAGE_SRC = "Beste utøver - GIFAS.png";
 const FALLBACK_IMAGE_SRC = "tekniskfeil.png";
+const DEFAULT_FULLSCREEN_IMAGE_LABEL = "Beste utøver";
+const FALLBACK_IMAGE_LABEL = "Teknisk feil";
+const LOCAL_IMAGE_OPTION_VALUE = "__local_image__";
 
 const basePresets = [
   {
@@ -137,6 +144,8 @@ let drawScheduled = false;
 let subGridStepSize = 16;
 let persistedImageSourceDataUrl = "";
 let persistedImageSourceName = "";
+let retainedLocalImageDataUrl = "";
+let retainedLocalImageName = "";
 let fullscreenImageElement = null;
 let fullscreenImageSrc = "";
 let identifyPanelsEnabled = false;
@@ -729,9 +738,27 @@ function usesPresetColorControls(presetId) {
   return isCheckerPreset(presetId) || isLinePreset(presetId) || isCurtainPreset(presetId);
 }
 
+function isBuiltInFullscreenImageSource(src) {
+  return src === DEFAULT_FULLSCREEN_IMAGE_SRC || src === FALLBACK_IMAGE_SRC;
+}
+
 function loadPersistedImageSource() {
   persistedImageSourceDataUrl = localStorage.getItem(IMAGE_SOURCE_DATA_STORAGE_KEY) || "";
   persistedImageSourceName = localStorage.getItem(IMAGE_SOURCE_NAME_STORAGE_KEY) || "";
+  retainedLocalImageDataUrl = localStorage.getItem(IMAGE_LOCAL_DATA_STORAGE_KEY) || "";
+  retainedLocalImageName = localStorage.getItem(IMAGE_LOCAL_NAME_STORAGE_KEY) || "";
+
+  // Migration: old builds stored local image only as active source.
+  if (!retainedLocalImageDataUrl && persistedImageSourceDataUrl && !isBuiltInFullscreenImageSource(persistedImageSourceDataUrl)) {
+    retainedLocalImageDataUrl = persistedImageSourceDataUrl;
+    retainedLocalImageName = persistedImageSourceName || "Local image";
+    try {
+      localStorage.setItem(IMAGE_LOCAL_DATA_STORAGE_KEY, retainedLocalImageDataUrl);
+      localStorage.setItem(IMAGE_LOCAL_NAME_STORAGE_KEY, retainedLocalImageName);
+    } catch {
+      // Ignore storage write failures; runtime still keeps values in memory.
+    }
+  }
 }
 
 function persistImageSource(dataUrl, name) {
@@ -754,6 +781,23 @@ function persistImageSource(dataUrl, name) {
   fullscreenImageSrc = "";
 }
 
+function persistRetainedLocalImage(dataUrl, name) {
+  retainedLocalImageDataUrl = dataUrl || "";
+  retainedLocalImageName = name || "";
+
+  try {
+    if (retainedLocalImageDataUrl) {
+      localStorage.setItem(IMAGE_LOCAL_DATA_STORAGE_KEY, retainedLocalImageDataUrl);
+      localStorage.setItem(IMAGE_LOCAL_NAME_STORAGE_KEY, retainedLocalImageName);
+    } else {
+      localStorage.removeItem(IMAGE_LOCAL_DATA_STORAGE_KEY);
+      localStorage.removeItem(IMAGE_LOCAL_NAME_STORAGE_KEY);
+    }
+  } catch {
+    // Keep current session values even if persistence fails.
+  }
+}
+
 function updateImageSourceControlsUI() {
   if (!imageSourceSection) {
     return;
@@ -765,11 +809,31 @@ function updateImageSourceControlsUI() {
     return;
   }
 
-  if (persistedImageSourceDataUrl) {
-    const label = persistedImageSourceName || "Selected image";
-    imageSourceOutput.textContent = `Selected: ${label}`;
-  } else {
-    imageSourceOutput.textContent = `Fallback: ${FALLBACK_IMAGE_SRC}`;
+  if (builtinImageSelect) {
+    const localOption = builtinImageSelect.querySelector("option[data-local-image='true']");
+    if (localOption) {
+      localOption.remove();
+    }
+
+    const hasLocalSource = Boolean(retainedLocalImageDataUrl);
+
+    if (hasLocalSource) {
+      const option = document.createElement("option");
+      option.value = LOCAL_IMAGE_OPTION_VALUE;
+      option.dataset.localImage = "true";
+      option.textContent = `Local: ${retainedLocalImageName || "Selected image"}`;
+      builtinImageSelect.insertBefore(option, builtinImageSelect.firstChild);
+    }
+
+    if (!persistedImageSourceDataUrl || persistedImageSourceDataUrl === FALLBACK_IMAGE_SRC) {
+      builtinImageSelect.value = FALLBACK_IMAGE_SRC;
+    } else if (persistedImageSourceDataUrl === DEFAULT_FULLSCREEN_IMAGE_SRC) {
+      builtinImageSelect.value = DEFAULT_FULLSCREEN_IMAGE_SRC;
+    } else if (hasLocalSource && persistedImageSourceDataUrl === retainedLocalImageDataUrl) {
+      builtinImageSelect.value = LOCAL_IMAGE_OPTION_VALUE;
+    } else {
+      builtinImageSelect.value = FALLBACK_IMAGE_SRC;
+    }
   }
 }
 
@@ -798,11 +862,23 @@ async function getFullscreenImageElement() {
     fullscreenImageSrc = preferredSrc;
     return image;
   } catch {
+    const wasActiveRetainedLocal = Boolean(
+      retainedLocalImageDataUrl && preferredSrc === retainedLocalImageDataUrl,
+    );
+
+    if (wasActiveRetainedLocal) {
+      // Local source is no longer usable; remove retained local slot.
+      persistRetainedLocalImage("", "");
+    }
+
     if (preferredSrc !== FALLBACK_IMAGE_SRC) {
       try {
         const fallbackImage = await loadImageElement(FALLBACK_IMAGE_SRC);
         fullscreenImageElement = fallbackImage;
         fullscreenImageSrc = FALLBACK_IMAGE_SRC;
+        // Last used source missing: fall back and persist fallback as active source.
+        persistImageSource(FALLBACK_IMAGE_SRC, FALLBACK_IMAGE_LABEL);
+        updateImageSourceControlsUI();
         return fallbackImage;
       } catch {
         return null;
@@ -828,25 +904,64 @@ function drawImageCover(image, width, height) {
   ctx.drawImage(image, dx, dy, drawW, drawH);
 }
 
-function drawImageCoverTransformed(image, width, height, shiftXPercent, shiftYPercent, rotationDeg) {
+function getFullscreenImageDrawDimensions(viewportWidth, viewportHeight, image, scaleMode = "cover") {
+  const safeViewportW = Math.max(1, viewportWidth);
+  const safeViewportH = Math.max(1, viewportHeight);
+  const iw = Math.max(1, image?.naturalWidth || image?.width || safeViewportW);
+  const ih = Math.max(1, image?.naturalHeight || image?.height || safeViewportH);
+
+  if (scaleMode === "contain") {
+    const scale = Math.min(safeViewportW / iw, safeViewportH / ih);
+    return { drawW: iw * scale, drawH: ih * scale };
+  }
+
+  if (scaleMode === "stretch") {
+    return { drawW: safeViewportW, drawH: safeViewportH };
+  }
+
+  if (scaleMode === "none") {
+    return { drawW: iw, drawH: ih };
+  }
+
+  const scale = Math.max(safeViewportW / iw, safeViewportH / ih);
+  return { drawW: iw * scale, drawH: ih * scale };
+}
+
+function drawImageCoverTransformed(
+  image,
+  width,
+  height,
+  shiftXPercent,
+  shiftYPercent,
+  rotationDeg,
+  wrapAround = false,
+  scaleMode = "cover",
+) {
   if (!image) {
     return;
   }
 
-  const iw = Math.max(1, image.naturalWidth || image.width);
-  const ih = Math.max(1, image.naturalHeight || image.height);
-  const scale = Math.max(width / iw, height / ih);
-  const drawW = iw * scale;
-  const drawH = ih * scale;
+  const { drawW, drawH } = getFullscreenImageDrawDimensions(width, height, image, scaleMode);
 
-  const panXPx = (shiftXPercent / 100) * width;
-  const panYPx = (shiftYPercent / 100) * height;
+  // Shift percentages are measured against the drawn image footprint.
+  const panXPx = (shiftXPercent / 100) * drawW;
+  const panYPx = (shiftYPercent / 100) * drawH;
   const rad = (rotationDeg * Math.PI) / 180;
 
   ctx.save();
   ctx.translate(width / 2 + panXPx, height / 2 + panYPx);
   ctx.rotate(rad);
-  ctx.drawImage(image, -drawW / 2, -drawH / 2, drawW, drawH);
+
+  if (wrapAround) {
+    for (let iy = -2; iy <= 2; iy += 1) {
+      for (let ix = -2; ix <= 2; ix += 1) {
+        ctx.drawImage(image, -drawW / 2 + ix * drawW, -drawH / 2 + iy * drawH, drawW, drawH);
+      }
+    }
+  } else {
+    ctx.drawImage(image, -drawW / 2, -drawH / 2, drawW, drawH);
+  }
+
   ctx.restore();
 }
 
@@ -2390,15 +2505,25 @@ async function draw() {
     if (fullscreenImage) {
       let imagePanXPercent = sliderShiftX;
       let imagePanYPercent = sliderShiftY;
+      const axisPixels = getShiftAxisPixelCounts();
 
       if (shiftMode === "tile") {
         // Tile mode for fullscreen image means movement in image-local axes.
-        const screenPan = localToScreenShift(sliderShiftX, sliderShiftY, getRotationRadians(), viewportW, viewportH);
+        const screenPan = localToScreenShift(sliderShiftX, sliderShiftY, getRotationRadians(), axisPixels.x, axisPixels.y);
         imagePanXPercent = screenPan.x;
         imagePanYPercent = screenPan.y;
       }
 
-      drawImageCoverTransformed(fullscreenImage, viewportW, viewportH, imagePanXPercent, imagePanYPercent, rotationValue);
+      drawImageCoverTransformed(
+        fullscreenImage,
+        viewportW,
+        viewportH,
+        imagePanXPercent,
+        imagePanYPercent,
+        rotationValue,
+        fullscreenImageWrapInput?.checked === true,
+        fullscreenImageScaleSelect?.value || "cover",
+      );
     }
 
     drawForcedOffPanels(geom, fullFrame);
@@ -2543,6 +2668,18 @@ function normalizeZero(value) {
 }
 
 function getShiftAxisPixelCounts() {
+  if (isFullscreenImagePreset(activePresetId)) {
+    const viewportW = Math.max(1, window.innerWidth || 1);
+    const viewportH = Math.max(1, window.innerHeight || 1);
+    const scaleMode = fullscreenImageScaleSelect?.value || "cover";
+    const { drawW, drawH } = getFullscreenImageDrawDimensions(viewportW, viewportH, fullscreenImageElement, scaleMode);
+
+    return {
+      x: Math.max(1, Math.round(drawW)),
+      y: Math.max(1, Math.round(drawH)),
+    };
+  }
+
   const { sourceWidth, sourceHeight } = getCurrentTileSourceDimensions();
 
   if (isLinePreset(activePresetId)) {
@@ -3124,11 +3261,25 @@ function setupEvents() {
     imageSourceInput?.click();
   });
 
-  useFallbackImageButton?.addEventListener("click", () => {
-    persistImageSource("", "");
+  builtinImageSelect?.addEventListener("change", () => {
+    const src = builtinImageSelect.value;
+    if (src === LOCAL_IMAGE_OPTION_VALUE) {
+      if (retainedLocalImageDataUrl) {
+        persistImageSource(retainedLocalImageDataUrl, retainedLocalImageName || "Local image");
+        updateImageSourceControlsUI();
+      }
+      requestDraw();
+      return;
+    }
+
+    const label = src === DEFAULT_FULLSCREEN_IMAGE_SRC ? DEFAULT_FULLSCREEN_IMAGE_LABEL : FALLBACK_IMAGE_LABEL;
+    persistImageSource(src, label);
     updateImageSourceControlsUI();
     requestDraw();
   });
+
+  fullscreenImageWrapInput?.addEventListener("input", requestDraw);
+  fullscreenImageScaleSelect?.addEventListener("input", requestDraw);
 
   imageSourceInput?.addEventListener("change", () => {
     const file = imageSourceInput.files && imageSourceInput.files[0];
@@ -3143,6 +3294,7 @@ function setupEvents() {
         return;
       }
 
+      persistRetainedLocalImage(dataUrl, file.name || "Local image");
       persistImageSource(dataUrl, file.name || "Local image");
       updateImageSourceControlsUI();
       requestDraw();
@@ -3378,6 +3530,10 @@ function setupEvents() {
   });
 
   window.addEventListener("resize", requestDraw);
+  document.addEventListener("fullscreenchange", requestDraw);
+  document.addEventListener("webkitfullscreenchange", requestDraw);
+  document.addEventListener("mozfullscreenchange", requestDraw);
+  document.addEventListener("MSFullscreenChange", requestDraw);
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && selectionReportModal && !selectionReportModal.hidden) {
