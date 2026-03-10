@@ -30,6 +30,7 @@ This file is the living coordination log for the LED Screen Stress Test project.
 - [ ] Add advanced custom preset editor UX
 - [ ] Define timing/performance controls
 - [ ] Refine OFF-area identify glow aesthetics (liquid-metal style) to better match desired hydrophobic meniscus/surface-tension behavior
+- [ ] Follow-up: Further compact URL sharing parameter scheme and readability
 - [x] Create initial web app scaffold
 - [x] Add local run/build scripts
 - [ ] Configure GitHub Pages deployment
@@ -234,3 +235,10 @@ This file is the living coordination log for the LED Screen Stress Test project.
 - 2026-03-10: Set fullscreen image scaling dropdown default mode to `Cover`.
 - 2026-03-10: Fullscreen image source handling now retains the local-file dropdown slot (`Local: ...`) even after switching to built-in sources, and removes that slot only when the retained local source is unavailable.
 - 2026-03-10: Fixed fullscreen image shift basis so `1px` shift steps and pan conversion use the rendered image footprint (`drawW/drawH`) rather than per-panel tile dimensions, including tile-to-screen conversion in fullscreen image mode.
+- 2026-03-10: Marked current build as known-good after sparse URL sharing refinements (`Copy URL`, `Reset`) and baseline state restore behavior.
+- 2026-03-10: Added URL state sharing: app state now serializes to a `?state=` payload in the address bar, supports startup restore from URL, and includes a `Copy Share Link` button to copy a reproducible view link.
+- 2026-03-10: Reworked URL sharing to sparse query parameters that include only non-default values (with legacy `?state=` read compatibility), fixing unreliable oversized links and improving reproducibility for shared hosted URLs.
+- 2026-03-10: Switched sharing implementation to compact sparse URL params (`?pr=...&ctl=...`) with startup restore and live URL sync, while excluding non-shareable local image blobs to keep links reliable.
+- 2026-03-10: Replaced packed controls URL param (`ctl`) with per-control sparse params so small single-setting changes no longer cause large URL length jumps.
+- 2026-03-10: Added header `Reset` button next to `Share Link` to clear share URL params and reload baseline view.
+- 2026-03-10: Marked this point as a known working version before commit handoff.
