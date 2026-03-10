@@ -242,3 +242,4 @@ This file is the living coordination log for the LED Screen Stress Test project.
 - 2026-03-10: Replaced packed controls URL param (`ctl`) with per-control sparse params so small single-setting changes no longer cause large URL length jumps.
 - 2026-03-10: Added header `Reset` button next to `Share Link` to clear share URL params and reload baseline view.
 - 2026-03-10: Marked this point as a known working version before commit handoff.
+- 2026-03-10: Fixed hosted fullscreen image/link reliability by correcting default image filename encoding (`ut\u00f8ver`), resolving relative image sources against the current page URL, and constructing shared links from explicit `origin + pathname`.
