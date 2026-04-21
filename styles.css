@@ -162,6 +162,10 @@ body {
   justify-content: start;
 }
 
+.tile-zoom-grid.subgrid-visible.subgrid-below {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .tile-zoom-view {
   display: grid;
   gap: 0;
