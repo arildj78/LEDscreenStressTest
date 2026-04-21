@@ -268,3 +268,4 @@ This file is the living coordination log for the LED Screen Stress Test project.
 - 2026-04-21: Sub-grid selection now also updates the active Tile Zoom tile to the containing tile, keeping sub-grid zoom contained within and synchronized to the selected tile context.
 - 2026-04-21: `Identify Zoomed Tile` now persists as a follow-mode toggle; when enabled, changing zoomed tile or sub-grid retargets the selected/highlighted panel to the current zoom tile while keeping the function active.
 - 2026-04-21: Fixed follow-mode update timing so zoomed-tile highlighting retargets immediately on tile/sub-grid selection events (not only after later draw reconciliation), removing the need to toggle `Zoomed Tile` off/on to refresh.
+- 2026-04-21: Added sub-grid zoom selection path through the Tile Zoom canvas while `Zoom Sub-grid` is armed, so operators can choose sub-grid target from either the main viewport or the zoom window using the same selection flow.
