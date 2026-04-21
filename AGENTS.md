@@ -271,3 +271,4 @@ This file is the living coordination log for the LED Screen Stress Test project.
 - 2026-04-21: Added sub-grid zoom selection path through the Tile Zoom canvas while `Zoom Sub-grid` is armed, so operators can choose sub-grid target from either the main viewport or the zoom window using the same selection flow.
 - 2026-04-21: Tile Zoom now switches sub-grid pane below tile in portrait-like panel aspect (height > width), with stacked-mode sizing/width lock updated to use the larger of tile/sub-grid widths rather than side-by-side sum.
 - 2026-04-21: Stabilized portrait/landscape switching with aspect-ratio hysteresis to prevent rapid flip-flopping near square panel sizes, and enforced exact equal widths for tile/sub-grid panes in stacked portrait mode.
+- 2026-04-21: Added double-buffered Tile Zoom rendering (tile and sub-grid panes render offscreen then blit) and kept frame draw active during width reconciliation to reduce visible flicker while resizing.
