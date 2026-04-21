@@ -94,6 +94,117 @@ body {
   display: none;
 }
 
+.tile-zoom-panel {
+  top: 28px;
+  left: auto;
+  right: 28px;
+  width: min(320px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  min-width: 220px;
+}
+
+.tile-zoom-panel .panel-header h2 {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.tile-zoom-panel .panel-header {
+  padding: 6px 10px;
+}
+
+.tile-zoom-close-button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #2a3b45;
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 120ms ease, color 120ms ease, transform 120ms ease;
+}
+
+.tile-zoom-close-button:hover {
+  background: rgba(42, 59, 69, 0.14);
+  color: #112029;
+}
+
+.tile-zoom-close-button:active {
+  transform: scale(0.95);
+}
+
+.tile-zoom-close-button:focus-visible {
+  outline: 2px solid rgba(17, 32, 41, 0.45);
+  outline-offset: 1px;
+}
+
+#zoomTileHint {
+  margin: 0;
+}
+
+.tile-zoom-content {
+  gap: 8px;
+}
+
+.tile-zoom-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.tile-zoom-grid.subgrid-visible {
+  grid-template-columns: max-content max-content;
+  justify-content: start;
+}
+
+.tile-zoom-view {
+  display: grid;
+  gap: 0;
+  align-content: start;
+}
+
+.tile-zoom-view[hidden] {
+  display: none;
+}
+
+#tileZoomCanvas,
+#subGridZoomCanvas {
+  display: block;
+  box-sizing: border-box;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  border: 1px solid #9aa6ac;
+  border-radius: 8px;
+  background: #050709;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+@media (max-width: 820px) {
+  .tile-zoom-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.tile-zoom-resize-handle {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 16px;
+  height: 16px;
+  border-right: 2px solid rgba(44, 58, 64, 0.85);
+  border-bottom: 2px solid rgba(44, 58, 64, 0.85);
+  border-radius: 0 0 8px 0;
+  cursor: nwse-resize;
+  z-index: 2;
+}
+
 .panel-header {
   display: flex;
   align-items: center;
@@ -116,6 +227,26 @@ body {
   padding: 12px;
   display: grid;
   gap: 12px;
+}
+
+.controls-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.controls-tab {
+  padding: 6px 8px;
+  font-size: 0.8rem;
+}
+
+.controls-tab.is-active {
+  background: #d64f2a;
+  border-color: #9d2f13;
+}
+
+.tab-hidden {
+  display: none !important;
 }
 
 .control-group {
@@ -446,10 +577,26 @@ fieldset {
   border-color: #9d2f13;
 }
 
+.identify-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.identify-row button {
+  padding: 6px 4px;
+  font-size: 0.78rem;
+}
+
 .grid-two label {
   display: grid;
   gap: 4px;
   font-size: 0.8rem;
+}
+
+#canvasFillColorInput,
+#windowFillColorInput,
+#tileLineColorInput {
+  min-height: 34px;
+  padding: 4px;
 }
 
 .info-box {
@@ -524,6 +671,14 @@ kbd {
     left: 10px;
     width: calc(100vw - 20px);
     max-height: calc(100vh - 20px);
+  }
+
+  .tile-zoom-panel {
+    top: auto;
+    right: 10px;
+    bottom: 10px;
+    width: min(280px, calc(100vw - 20px));
+    max-height: min(340px, calc(100vh - 20px));
   }
 
   .grid-two {

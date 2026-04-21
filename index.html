@@ -23,7 +23,13 @@
       </header>
 
       <div class="panel-content">
-        <div class="control-group">
+        <div class="controls-tabs" role="tablist" aria-label="Control groups">
+          <button type="button" class="controls-tab is-active" data-controls-tab="setup" role="tab" aria-selected="true">Setup</button>
+          <button type="button" class="controls-tab" data-controls-tab="graphics" role="tab" aria-selected="false">Graphics</button>
+          <button type="button" class="controls-tab" data-controls-tab="manipulate" role="tab" aria-selected="false">Manipulate</button>
+        </div>
+
+        <div class="control-group tab-group tab-group-graphics">
           <label for="presetSelect">Preset</label>
           <div class="preset-row">
             <select id="presetSelect"></select>
@@ -43,7 +49,7 @@
           </div>
         </div>
 
-        <div class="control-group" id="checkerSizeGroup">
+        <div class="control-group tab-group tab-group-graphics" id="checkerSizeGroup">
           <div class="checker-size-header">
             <label for="checkerPixelSizeRange" class="checker-size-title cycle-caption">
               <input id="cycleIncludeSize" type="checkbox">
@@ -55,7 +61,7 @@
           <output id="checkerPixelSizeOutput">1 px</output>
         </div>
 
-        <div class="control-group custom-section" id="customSection" hidden>
+        <div class="control-group custom-section tab-group tab-group-graphics" id="customSection" hidden>
           <label for="customCssInput">Custom Tile CSS</label>
           <textarea id="customCssInput" rows="4" spellcheck="false" placeholder="Example: linear-gradient(90deg, #fff 0 50%, #000 50% 100%)"></textarea>
           <div class="inline-controls">
@@ -64,7 +70,7 @@
           </div>
         </div>
 
-        <div class="control-group image-source-section" id="imageSourceSection" hidden>
+        <div class="control-group image-source-section tab-group tab-group-graphics" id="imageSourceSection" hidden>
           <label>Fullscreen Image Source</label>
           <div class="inline-controls">
             <button id="chooseImageSourceButton" type="button">Choose Image</button>
@@ -75,8 +81,8 @@
           </div>
           <label>Image Scaling
             <select id="fullscreenImageScaleSelect" aria-label="Fullscreen image scaling mode">
-              <option value="none">No scaling (100%)</option>
-              <option value="cover" selected>Cover</option>
+              <option value="none" selected>No scaling (100%)</option>
+              <option value="cover">Cover</option>
               <option value="contain">Contain</option>
               <option value="stretch">Stretch</option>
             </select>
@@ -85,7 +91,18 @@
           <input id="imageSourceInput" type="file" accept="image/*" hidden>
         </div>
 
-        <div class="control-group shift-controls-group">
+        <div class="control-group tab-group tab-group-setup" id="patternScaleSection">
+          <label>Canvas Scaling
+            <select id="canvasScaleSelect" aria-label="Canvas scaling mode">
+              <option value="none" selected>No scaling (100%)</option>
+              <option value="cover">Cover</option>
+              <option value="contain">Contain</option>
+              <option value="stretch">Stretch</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="control-group shift-controls-group tab-group tab-group-manipulate">
           <div class="shift-controls-header">
             <span class="shift-controls-title">Tile Shift</span>
             <div class="shift-controls-actions">
@@ -121,18 +138,13 @@
           </div>
         </div>
 
-        <div class="control-group">
+        <div class="control-group tab-group tab-group-manipulate">
           <label for="rotationRange" class="cycle-caption"><input id="cycleIncludeRotation" type="checkbox" checked> Tile Rotation</label>
           <input id="rotationRange" type="range" min="0" max="360" step="1" value="0">
           <output id="rotationOutput">0 deg</output>
         </div>
 
-        <div class="control-group">
-          <label for="wheelRotationStepInput">Wheel Rotation Step (deg)</label>
-          <input id="wheelRotationStepInput" type="number" min="0.1" step="0.1" value="2">
-        </div>
-
-        <fieldset class="control-group">
+        <fieldset class="control-group tab-group tab-group-setup">
           <legend>Geometry</legend>
           <div class="grid-two">
             <label>Modules Wide
@@ -162,7 +174,27 @@
           </div>
         </fieldset>
 
-        <fieldset class="control-group">
+        <fieldset class="control-group tab-group tab-group-setup" id="canvasSection">
+          <legend>Canvas</legend>
+          <div class="grid-two" id="patternFillSection">
+            <label>Canvas Fill
+              <input id="canvasFillColorInput" type="color" value="#000000" aria-label="Canvas fill color">
+            </label>
+            <label>Window Fill
+              <input id="windowFillColorInput" type="color" value="#07f7d2" aria-label="Window fill color">
+            </label>
+          </div>
+          <div class="grid-two" id="canvasPositionSection">
+            <label>X
+              <input id="canvasOffsetXInput" type="number" step="1" value="0" aria-label="Canvas X offset in pixels">
+            </label>
+            <label>Y
+              <input id="canvasOffsetYInput" type="number" step="1" value="0" aria-label="Canvas Y offset in pixels">
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="control-group tab-group tab-group-setup">
           <legend>Dividing Lines</legend>
           <div class="grid-two">
             <label>Show Tile Lines
@@ -182,6 +214,24 @@
             <span class="subgrid-preset-label">Sub-grid Presets</span>
             <div id="subGridPresetButtons" class="checker-preset-buttons" aria-label="Sub-grid preset sizes"></div>
           </div>
+        </fieldset>
+
+        <fieldset class="control-group tab-group tab-group-setup">
+          <legend>Controls</legend>
+          <label for="wheelRotationStepInput">Wheel Rotation Step (deg)</label>
+          <input id="wheelRotationStepInput" type="number" min="0.1" step="0.1" value="2">
+        </fieldset>
+
+        <fieldset class="control-group tab-group tab-group-manipulate">
+          <legend>Control</legend>
+          <div class="bulk-toggle-row">
+            <button id="toggleTileControlButton" type="button">Toggle Tile</button>
+            <button id="toggleSubGridControlButton" type="button">Toggle Sub-grid</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="control-group tab-group tab-group-manipulate">
+          <legend>Panel Controls</legend>
           <div class="bulk-toggle-row">
             <button id="allPanelsOnButton" type="button">All Panels On</button>
             <button id="allPanelsOffButton" type="button">All Panels Off</button>
@@ -189,18 +239,46 @@
             <button id="allSubGridOffButton" type="button">All Sub-grid Off</button>
           </div>
           <div class="bulk-toggle-row">
-            <button id="identifyPanelsButton" type="button">Identify OFF Panels</button>
-            <button id="identifySubGridButton" type="button">Identify OFF Sub-grid</button>
+            <button id="zoomTileButton" type="button">Zoom Tile</button>
+            <button id="zoomSubGridButton" type="button">Zoom Sub-grid</button>
+          </div>
+          <p id="zoomTileHint" class="help-text" hidden>Click a tile in the output to open Tile Zoom.</p>
+        </fieldset>
+
+        <fieldset class="control-group tab-group tab-group-manipulate">
+          <legend>Selection Information</legend>
+          <div class="bulk-toggle-row identify-row">
+            <button id="identifyPanelsButton" type="button" title="Identify OFF Panels">OFF Panels</button>
+            <button id="identifySubGridButton" type="button" title="Identify OFF Sub-grid">OFF Sub-grid</button>
+            <button id="identifyZoomedTileButton" type="button" title="Identify Zoomed Tile">Zoomed Tile</button>
           </div>
           <div class="bulk-toggle-row">
             <button id="selectionReportButton" type="button" class="wide-button">Selection Report</button>
           </div>
         </fieldset>
 
-        <div class="info-box" id="infoBox" aria-live="polite"></div>
+        <div class="info-box tab-group tab-group-setup" id="infoBox" aria-live="polite"></div>
 
         <p class="help-text">Shortcuts: <kbd>P</kbd> toggles panel, <kbd>Tab</kbd> cycles wheel mode, <kbd>C</kbd> toggles shift coordinates (Tile/Screen), mouse wheel adjusts active slider, mouse side buttons also cycle wheel mode. Click any output tile to toggle that panel on/off (off = dark gray).</p>
       </div>
+    </section>
+
+    <section id="tileZoomPanel" class="control-panel tile-zoom-panel hidden" aria-label="Tile zoom panel">
+      <header id="tileZoomPanelHeader" class="panel-header">
+        <h2>Tile Zoom</h2>
+        <button id="tileZoomCloseButton" type="button" class="tile-zoom-close-button" aria-label="Close Tile Zoom">&times;</button>
+      </header>
+      <div class="panel-content tile-zoom-content">
+        <div id="tileZoomGrid" class="tile-zoom-grid">
+          <div class="tile-zoom-view">
+            <canvas id="tileZoomCanvas" width="280" height="280" aria-label="Zoomed tile preview"></canvas>
+          </div>
+          <div id="subGridZoomView" class="tile-zoom-view" hidden>
+            <canvas id="subGridZoomCanvas" width="280" height="280" aria-label="Zoomed sub-grid preview"></canvas>
+          </div>
+        </div>
+      </div>
+      <div id="tileZoomPanelResizeHandle" class="tile-zoom-resize-handle" aria-hidden="true"></div>
     </section>
   </main>
 
