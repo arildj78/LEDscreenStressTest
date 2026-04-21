@@ -264,3 +264,4 @@ This file is the living coordination log for the LED Screen Stress Test project.
 - 2026-04-21: Refined landscape width lock to measure left/right gutters from live DOM geometry (`tile-zoom-content` vs `tile-zoom-grid`) so all real wrapper spacing is included in the exact width footprint.
 - 2026-04-21: Replaced rect-delta gutter inference with explicit box-model gutter sums (content padding + grid wrapper margin/border/padding on both sides, plus scrollbar gutter) to avoid 2x gutter undercount in landscape width locking.
 - 2026-04-21: Fixed `sanitizeNumber` to parse CSS unit strings (e.g. `12px`) in addition to plain numeric values, restoring non-zero gutter measurements derived from computed styles.
+- 2026-04-21: Extended exact gutter-based width locking to tile-only zoom mode (no sub-grid), using `left gutter + tile zoom + right gutter` so tile-only windows no longer remain overly wide and width/aspect behavior stays constrained.
