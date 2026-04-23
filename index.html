@@ -27,6 +27,7 @@
           <button type="button" class="controls-tab is-active" data-controls-tab="setup" role="tab" aria-selected="true">Setup</button>
           <button type="button" class="controls-tab" data-controls-tab="graphics" role="tab" aria-selected="false">Graphics</button>
           <button type="button" class="controls-tab" data-controls-tab="manipulate" role="tab" aria-selected="false">Manipulate</button>
+          <button type="button" class="controls-tab" data-controls-tab="suite" role="tab" aria-selected="false">Suite</button>
         </div>
 
         <div class="control-group tab-group tab-group-graphics">
@@ -47,6 +48,14 @@
               <input id="presetColor2Input" type="color" value="#000000" hidden>
             </div>
           </div>
+        </div>
+
+        <div class="control-group tab-group tab-group-graphics">
+          <div class="bulk-toggle-row repeat-pattern-row">
+            <button id="repeatTilePatternButton" type="button">Repeat Tile</button>
+            <button id="repeatSubGridPatternButton" type="button">Repeat Sub-grid</button>
+          </div>
+          <p id="repeatPatternHint" class="help-text" hidden>Click a tile in the output to choose repeat source.</p>
         </div>
 
         <div class="control-group tab-group tab-group-graphics" id="checkerSizeGroup">
@@ -251,9 +260,44 @@
             <button id="identifyPanelsButton" type="button" title="Identify OFF Panels">OFF Panels</button>
             <button id="identifySubGridButton" type="button" title="Identify OFF Sub-grid">OFF Sub-grid</button>
             <button id="identifyZoomedTileButton" type="button" title="Identify Zoomed Tile">Zoomed Tile</button>
+            <button id="identifyRepeatedSourceButton" type="button" title="Identify Repeated Tile or Sub-grid" disabled>Repeated Tile</button>
           </div>
           <div class="bulk-toggle-row">
             <button id="selectionReportButton" type="button" class="wide-button">Selection Report</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="control-group tab-group tab-group-suite">
+          <legend>Test Suite</legend>
+          <label>Suite Name
+            <input id="suiteNameInput" type="text" placeholder="My LED Test Suite">
+          </label>
+          <div class="bulk-toggle-row">
+            <button id="saveSuiteButton" type="button">Save Suite</button>
+            <button id="copySuiteLinkButton" type="button">Copy Suite Link</button>
+          </div>
+          <label>Case Name
+            <input id="suiteCaseNameInput" type="text" placeholder="Case name">
+          </label>
+          <div class="bulk-toggle-row">
+            <button id="addSuiteCaseButton" type="button">Add/Update Case</button>
+            <button id="deleteSuiteCaseButton" type="button">Delete Case</button>
+          </div>
+          <label>Suite Cases
+            <select id="suiteCasesSelect" size="8" aria-label="Suite test cases"></select>
+          </label>
+          <div class="bulk-toggle-row">
+            <button id="prevSuiteCaseButton" type="button">Prev Case</button>
+            <button id="nextSuiteCaseButton" type="button">Next Case</button>
+          </div>
+          <button id="applySuiteCaseButton" type="button" class="wide-button">Apply Current Case</button>
+          <output id="suiteStepOutput">0 / 0</output>
+          <label>Suite JSON
+            <textarea id="suitePayloadInput" rows="5" spellcheck="false" placeholder='{"name":"My Suite","cases":[...]}'></textarea>
+          </label>
+          <div class="bulk-toggle-row">
+            <button id="exportSuiteButton" type="button">Export</button>
+            <button id="importSuiteButton" type="button">Import</button>
           </div>
         </fieldset>
 

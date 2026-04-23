@@ -31,6 +31,7 @@ This file is the living coordination log for the LED Screen Stress Test project.
 - [ ] Define timing/performance controls
 - [ ] Refine OFF-area identify glow aesthetics (liquid-metal style) to better match desired hydrophobic meniscus/surface-tension behavior
 - [ ] Follow-up: Further compact URL sharing parameter scheme and readability
+- [x] Add Suite tab for test-case workflows with save/share + walkthrough
 - [x] Create initial web app scaffold
 - [x] Add local run/build scripts
 - [ ] Configure GitHub Pages deployment
@@ -281,3 +282,10 @@ This file is the living coordination log for the LED Screen Stress Test project.
 - 2026-04-21: Re-enabling `Zoomed Tile` follow mode now immediately re-applies both tile and currently zoomed sub-grid highlights, so sub-grid context is visible without waiting for another target change.
 - 2026-04-21: Decoupled `Zoomed Tile` follow highlighting from manual panel/sub-grid selection sets and rendered both overlays concurrently, so zoomed-follow targets and user selections can be different and visible at the same time.
 - 2026-04-21: Sub-grid zoom pane now samples from a pre-overlay frame capture, so it always shows only the original graphic content (no grid lines, selection overlays, or zoomed-follow overlays).
+- 2026-04-21: Added a fourth `Suite` tab with test-suite authoring and walkthrough controls (add/update/delete case from current app state, previous/next case stepping, apply case), plus local persistence, JSON export/import, and suite URL sharing via sparse `tsu` query state.
+- 2026-04-21: Added `Repeat Tile` and `Repeat Sub-grid` controls in the `Graphics` tab, integrated into shared URL/local suite state, and updated rendering so disabling repeat returns to a single base-graphic draw.
+- 2026-04-21: Changed `Repeat Tile`/`Repeat Sub-grid` to sticky toggle buttons with press-to-arm source picking; after arming, the UI cues the operator to click a tile/sub-grid cell that becomes the repeated source, and pressing an active button again disables that repeat mode.
+- 2026-04-23: Added explicit repeat-source feedback (persistent hint text, info-box status, and cyan dashed source outline on canvas) so selecting a repeat source is visibly acknowledged even on visually periodic patterns.
+- 2026-04-23: Fixed repeat-mode rendering in `Full Screen Image` preset by routing fullscreen image output through the same repeat-source draw path (tile/sub-grid/base), so selected repeat sources now visibly affect fullscreen-image mode too.
+- 2026-04-23: Added repeat-source selection path through the Tile Zoom canvas and Sub-grid Zoom canvas while repeat mode is armed, so operators can choose repeat sources from either the main viewport or the zoom windows.
+- 2026-04-23: Moved repeat-source cyan outline behind a new `Repeated Tile` identify button in `Selection Information`; button now indicates either repeated tile or repeated sub-grid source, and is automatically disabled when no repeat source is active.

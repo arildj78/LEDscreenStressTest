@@ -235,7 +235,7 @@ body {
 
 .controls-tabs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
 }
 
@@ -521,6 +521,15 @@ button:hover {
   flex: 1;
 }
 
+#suiteCasesSelect {
+  min-height: 180px;
+}
+
+#suitePayloadInput {
+  resize: vertical;
+  font-family: Consolas, "Courier New", monospace;
+}
+
 .image-source-section output {
   display: block;
   max-width: 100%;
@@ -568,6 +577,14 @@ fieldset {
   gap: 8px;
 }
 
+.repeat-pattern-row {
+  margin-bottom: 2px;
+}
+
+#repeatPatternHint {
+  margin: 0;
+}
+
 .bulk-toggle-row button {
   padding: 6px 8px;
 }
@@ -582,7 +599,7 @@ fieldset {
 }
 
 .identify-row {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .identify-row button {
