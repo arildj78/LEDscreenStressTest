@@ -313,12 +313,49 @@
         <button id="tileZoomCloseButton" type="button" class="tile-zoom-close-button" aria-label="Close Tile Zoom">&times;</button>
       </header>
       <div class="panel-content tile-zoom-content">
-        <div id="tileZoomGrid" class="tile-zoom-grid">
-          <div class="tile-zoom-view">
-            <canvas id="tileZoomCanvas" width="280" height="280" aria-label="Zoomed tile preview"></canvas>
-          </div>
-          <div id="subGridZoomView" class="tile-zoom-view" hidden>
-            <canvas id="subGridZoomCanvas" width="280" height="280" aria-label="Zoomed sub-grid preview"></canvas>
+        <div class="tile-zoom-workspace">
+          <aside class="tile-zoom-toolbar" aria-label="Paint toolbar">
+            <div class="paint-tool-group" role="group" aria-label="Paint tools">
+              <button id="paintToolArrowButton" type="button" class="paint-tool-button" aria-label="Select tool" title="Select">
+                <img class="paint-tool-icon" src="assets/icons/gimp/gimp-cursor.svg" alt="" aria-hidden="true">
+              </button>
+              <button id="paintToolPencilButton" type="button" class="paint-tool-button" aria-label="Pencil tool" title="Pencil">
+                <img class="paint-tool-icon" src="assets/icons/gimp/gimp-tool-pencil.svg" alt="" aria-hidden="true">
+              </button>
+              <button id="paintToolEraserButton" type="button" class="paint-tool-button" aria-label="Eraser tool" title="Eraser">
+                <img class="paint-tool-icon" src="assets/icons/gimp/gimp-tool-eraser.svg" alt="" aria-hidden="true">
+              </button>
+              <button id="paintToolBucketButton" type="button" class="paint-tool-button" aria-label="Bucket fill tool" title="Bucket Fill">
+                <img class="paint-tool-icon" src="assets/icons/gimp/gimp-tool-bucket-fill.svg" alt="" aria-hidden="true">
+              </button>
+            </div>
+
+            <div class="paint-swatch-stack" aria-label="Paint colors">
+              <label class="paint-swatch paint-swatch-background" for="paintBackgroundColorInput" title="Background color">
+                <input id="paintBackgroundColorInput" type="color" value="#000000" aria-label="Paint background color">
+              </label>
+              <label class="paint-swatch paint-swatch-foreground" for="paintForegroundColorInput" title="Foreground color">
+                <input id="paintForegroundColorInput" type="color" value="#ffffff" aria-label="Paint foreground color">
+              </label>
+              <button id="paintDefaultColorsButton" type="button" class="paint-default-button" aria-label="Reset to default foreground and background colors" title="Default colors">
+                <img class="paint-color-action-icon" src="assets/icons/gimp/gimp-default-colors.svg" alt="" aria-hidden="true">
+              </button>
+              <button id="paintSwapColorsButton" type="button" class="paint-swap-button" aria-label="Swap foreground and background colors" title="Swap colors">
+                <img class="paint-color-action-icon" src="assets/icons/gimp/gimp-swap-colors.svg" alt="" aria-hidden="true">
+              </button>
+            </div>
+
+            <button id="clearPaintButton" type="button" class="paint-tool-button paint-clear-button" aria-label="Clear paint layer" title="Clear paint layer">
+              <img class="paint-tool-icon" src="assets/icons/gimp/edit-delete.svg" alt="" aria-hidden="true">
+            </button>
+          </aside>
+          <div id="tileZoomGrid" class="tile-zoom-grid">
+            <div class="tile-zoom-view">
+              <canvas id="tileZoomCanvas" width="280" height="280" aria-label="Zoomed tile preview"></canvas>
+            </div>
+            <div id="subGridZoomView" class="tile-zoom-view" hidden>
+              <canvas id="subGridZoomCanvas" width="280" height="280" aria-label="Zoomed sub-grid preview"></canvas>
+            </div>
           </div>
         </div>
       </div>
